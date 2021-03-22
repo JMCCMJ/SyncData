@@ -43,4 +43,4 @@ API
 4. Can the sub application update forms and fields? Does this propagate to other sub applications or the main application?
 
 ## Notes
-- Currently using SqLite, so published app service does not currently work local DB file
+- Currently using SqLite, so published app service does not currently work with DB file
