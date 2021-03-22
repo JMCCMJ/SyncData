@@ -54,6 +54,40 @@ namespace SyncDataAPI.Migrations
                     b.ToTable("Forms");
                 });
 
+            modelBuilder.Entity("SyncDataAPI.LogData", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("FieldId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FormId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("InventoryCountNew")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("InventoryCountPrevious")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("InventoryDescNew")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("InventoryDescPrevious")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SubApplicationId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LogDatas");
+                });
+
             modelBuilder.Entity("SyncDataAPI.Field", b =>
                 {
                     b.HasOne("SyncDataAPI.Form", null)

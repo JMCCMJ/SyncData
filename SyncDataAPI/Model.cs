@@ -6,6 +6,7 @@ namespace SyncDataAPI
     {
         public DbSet<Form> Forms { get; set; }
         public DbSet<Field> Fields { get; set; }
+        public DbSet<LogData> LogDatas { get; set; }
 
 
         public FormsContext(): base()

@@ -46,19 +46,45 @@ namespace SyncDataAPI.Controllers
             {
                 Form form = db.Forms.FirstOrDefault(form => form.FormId == id);
                 List<Field> fields = db.Fields.Where(field => field.FormId == id).ToList();
-                form.Fields = fields;
+                if (form != null)
+                {
+                    form.Fields = fields;
+                }
                 return form;
             }
         }
 
         //Finds a form by id
         [ApiExplorerSettings(IgnoreApi = true)]
-        public Field findField(int id)
+        private Field findField(int id)
         {
             using (var db = new FormsContext())
             {
                 Field field = db.Fields.FirstOrDefault(field => field.FormId == id);
                 return field;
+            }
+        }
+
+        //Updates a form
+        [HttpPost("/api/[controller]/updateForm")]
+        public IActionResult updateForm(Form form)
+        {
+            using (var db = new FormsContext())
+            {
+                Form checkIfExists = findForm(form.FormId);
+
+                if (checkIfExists != null)
+                {
+                    db.Update(form);
+                    db.SaveChanges();
+                    Console.WriteLine("Edited form with id: " + form.FormId);
+                    return Ok(form);
+                }
+                else
+                {
+                    Console.WriteLine("Could not find form with id: " + form.FormId);
+                    return BadRequest("Could not find form with id: " + form.FormId);
+                }
             }
         }
 
@@ -115,6 +141,16 @@ namespace SyncDataAPI.Controllers
                     return BadRequest("Could not find form with id: " + id);
                 }
             }
+        }
+
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        private Boolean UpdateSubApplications(Form form)
+        {
+            //HttpClient requests to update sub applications
+
+            //return true if updates succeed
+            return true;
         }
     }
 }

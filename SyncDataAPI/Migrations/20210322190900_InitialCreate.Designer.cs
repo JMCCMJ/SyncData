@@ -8,7 +8,7 @@ using SyncDataAPI;
 namespace SyncDataAPI.Migrations
 {
     [DbContext(typeof(FormsContext))]
-    [Migration("20210322083425_InitialCreate")]
+    [Migration("20210322190900_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,6 +54,40 @@ namespace SyncDataAPI.Migrations
                     b.HasKey("FormId");
 
                     b.ToTable("Forms");
+                });
+
+            modelBuilder.Entity("SyncDataAPI.LogData", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("FieldId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("FormId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("InventoryCountNew")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("InventoryCountPrevious")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("InventoryDescNew")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("InventoryDescPrevious")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("SubApplicationId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LogDatas");
                 });
 
             modelBuilder.Entity("SyncDataAPI.Field", b =>
