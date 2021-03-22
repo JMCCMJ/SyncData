@@ -12,3 +12,6 @@
 /SyncDataClientToken/appsettings.json
 /SyncDataClientToken/.vs/SyncDataClientToken
 /SyncDataClientToken/obj
+/SyncDataAPI/Properties
+/SyncDataAPI/bin/Release/net5.0
+/SyncDataAPI/.config
