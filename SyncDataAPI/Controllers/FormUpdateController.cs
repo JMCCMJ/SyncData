@@ -10,16 +10,16 @@ namespace SyncDataAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class FormUpdateController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<FormUpdateController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public FormUpdateController(ILogger<FormUpdateController> logger)
         {
             _logger = logger;
         }
@@ -38,7 +38,7 @@ namespace SyncDataAPI.Controllers
             .ToArray();
         }
 
-        //Finds a note by id
+        //Finds a form by id
         [ApiExplorerSettings(IgnoreApi = true)]
         public Form findForm(string id)
         {
@@ -50,29 +50,29 @@ namespace SyncDataAPI.Controllers
         }
 
 
-        //Adds a new note
+        //Adds a new form
         //*Currently user provides an id*
         //*Better version would auto generate the id with Guid.NewGuid.ToString()*
-        [HttpPost("/api/[controller]/addNote")]
-        public IActionResult addNote(Form form)
+        [HttpPost("/api/[controller]/addForm")]
+        public IActionResult addForm(Form form)
         {
             using (var db = new FormsContext())
             {
                 //Use this if user is not sending their own ID
-                //note.Id = Guid.NewGuid().ToString();
+                //form.Id = Guid.NewGuid().ToString();
                 Form checkIfExists = findForm(form.FormId);
 
                 if (checkIfExists == null)
                 {
                     db.Add(form);
                     db.SaveChanges();
-                    Console.WriteLine("Added note with id: " + form.FormId);
+                    Console.WriteLine("Added form with id: " + form.FormId);
                     return Ok(form);
                 }
                 else
                 {
-                    Console.WriteLine("Note already exists with id: " + form.FormId);
-                    return BadRequest("Note already exists with id: " + form.FormId);
+                    Console.WriteLine("Form already exists with id: " + form.FormId);
+                    return BadRequest("Form already exists with id: " + form.FormId);
                 }
             }
         }

@@ -3,3 +3,8 @@
 ################################################################################
 
 /SyncDataAPI/appsettings.json
+/SyncDataAPI/obj/Debug/net5.0/staticwebassets
+/SyncDataAPI/obj/Debug/net5.0
+/SyncDataAPI/obj
+/SyncDataAPI/bin/Debug/net5.0
+/SyncDataAPI/.vs/SyncDataAPI
