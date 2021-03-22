@@ -24,7 +24,7 @@ namespace SyncDataAPI.Controllers
             _logger = logger;
         }
 
-       // [Authorize]
+        // [Authorize]
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
@@ -105,12 +105,16 @@ namespace SyncDataAPI.Controllers
                     field.FormId = form.FormId;
                 }
 
+
                 Form checkIfExists = findForm(form.FormId);
 
                 if (checkIfExists == null)
                 {
                     db.Add(form);
                     db.SaveChanges();
+
+                    updateSubApplications(form);
+
                     Console.WriteLine("Added form with id: " + form.FormId);
                     return Ok(form);
                 }
@@ -143,14 +147,78 @@ namespace SyncDataAPI.Controllers
             }
         }
 
+        //Get all logs
+        [HttpGet("/api/[controller]/getLogs")]
+        public IActionResult getLogs()
+        {
+            using (var db = new FormsContext())
+            {
+                List<LogData> logDatas = db.LogDatas.ToList();
+                return Ok(logDatas);
+            }
+        }
+
+        //Get all logs
+        [HttpGet("/api/[controller]/populateSubApplications")]
+        public IActionResult populateSubApplications()
+        {
+            using (var db = new FormsContext())
+            {
+                SubApplication subApplication1 = new SubApplication();
+                subApplication1.Id = Guid.NewGuid().ToString();
+
+                SubApplication subApplication2 = new SubApplication();
+                subApplication2.Id = Guid.NewGuid().ToString();
+
+                SubApplication subApplication3 = new SubApplication();
+                subApplication3.Id = Guid.NewGuid().ToString();
+
+                db.Add(subApplication1);
+                db.Add(subApplication2);
+                db.Add(subApplication3);
+
+                db.SaveChanges();
+
+                return Ok("DB Sub Applications Initialized");
+            }
+        }
+
 
         [ApiExplorerSettings(IgnoreApi = true)]
-        private Boolean UpdateSubApplications(Form form)
+        private Boolean updateSubApplications(Form form)
         {
             //HttpClient requests to update sub applications
+            using (var db = new FormsContext())
+            {
+                List<SubApplication> subApplications = getSubApplications();
+
+                for (int i = 0; i < form.Fields.Count; i++)
+                {
+                    Field field = form.Fields[i];
+
+                    for (int j = 0; j < subApplications.Count; j++)
+                    {
+                        LogData logData = new LogData(form.FormId, subApplications[j].Id, field.FieldId, field.InventoryCount, field.InventoryDesc, form.UpdatedBy);
+                        db.Add(logData);
+                    }
+                    db.SaveChanges();
+                }
+            }
 
             //return true if updates succeed
             return true;
+        }
+
+        //Finds a form by id
+        [ApiExplorerSettings(IgnoreApi = true)]
+        private List<SubApplication> getSubApplications()
+        {
+            using (var db = new FormsContext())
+            {
+                List<SubApplication> subApplications = db.SubApplications.ToList();
+
+                return subApplications;
+            }
         }
     }
 }

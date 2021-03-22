@@ -8,7 +8,7 @@ using SyncDataAPI;
 namespace SyncDataAPI.Migrations
 {
     [DbContext(typeof(FormsContext))]
-    [Migration("20210322190900_InitialCreate")]
+    [Migration("20210322203619_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,20 +67,14 @@ namespace SyncDataAPI.Migrations
                     b.Property<int>("FormId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("InventoryCountNew")
+                    b.Property<int>("InventoryCount")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("InventoryCountPrevious")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("InventoryDescNew")
+                    b.Property<string>("InventoryDesc")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("InventoryDescPrevious")
+                    b.Property<string>("SubApplicationId")
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("SubApplicationId")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("TEXT");
@@ -88,6 +82,16 @@ namespace SyncDataAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("LogDatas");
+                });
+
+            modelBuilder.Entity("SyncDataAPI.SubApplication", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SubApplications");
                 });
 
             modelBuilder.Entity("SyncDataAPI.Field", b =>

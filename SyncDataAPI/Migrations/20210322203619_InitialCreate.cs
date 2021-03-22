@@ -26,17 +26,26 @@ namespace SyncDataAPI.Migrations
                 {
                     Id = table.Column<string>(type: "TEXT", nullable: false),
                     FormId = table.Column<int>(type: "INTEGER", nullable: false),
-                    SubApplicationId = table.Column<int>(type: "INTEGER", nullable: false),
+                    SubApplicationId = table.Column<string>(type: "TEXT", nullable: true),
                     FieldId = table.Column<int>(type: "INTEGER", nullable: false),
-                    InventoryCountPrevious = table.Column<int>(type: "INTEGER", nullable: false),
-                    InventoryCountNew = table.Column<int>(type: "INTEGER", nullable: false),
-                    InventoryDescPrevious = table.Column<string>(type: "TEXT", nullable: true),
-                    InventoryDescNew = table.Column<string>(type: "TEXT", nullable: true),
+                    InventoryCount = table.Column<int>(type: "INTEGER", nullable: false),
+                    InventoryDesc = table.Column<string>(type: "TEXT", nullable: true),
                     UpdatedBy = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_LogDatas", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SubApplications",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubApplications", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -73,6 +82,9 @@ namespace SyncDataAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "LogDatas");
+
+            migrationBuilder.DropTable(
+                name: "SubApplications");
 
             migrationBuilder.DropTable(
                 name: "Forms");
