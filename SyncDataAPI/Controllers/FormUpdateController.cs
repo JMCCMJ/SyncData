@@ -12,86 +12,11 @@ namespace SyncDataAPI.Controllers
     [Route("[controller]")]
     public class FormUpdateController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        private readonly ILogger<FormUpdateController> _logger;
-
-        public FormUpdateController(ILogger<FormUpdateController> logger)
-        {
-            _logger = logger;
-        }
-
-        // [Authorize]
-        [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
-        {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
-        }
-
-        //Finds a form by id
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public Form findForm(int id)
-        {
-            using (var db = new FormsContext())
-            {
-                Form form = db.Forms.FirstOrDefault(form => form.FormId == id);
-                List<Field> fields = db.Fields.Where(field => field.FormId == id).ToList();
-                if (form != null)
-                {
-                    form.Fields = fields;
-                }
-                return form;
-            }
-        }
-
-        //Finds a form by id
-        [ApiExplorerSettings(IgnoreApi = true)]
-        private Field findField(int id)
-        {
-            using (var db = new FormsContext())
-            {
-                Field field = db.Fields.FirstOrDefault(field => field.FormId == id);
-                return field;
-            }
-        }
-
-        //Updates a form
-        [HttpPost("/api/[controller]/updateForm")]
-        public IActionResult updateForm(Form form)
-        {
-            using (var db = new FormsContext())
-            {
-                Form checkIfExists = findForm(form.FormId);
-
-                if (checkIfExists != null)
-                {
-                    db.Update(form);
-                    db.SaveChanges();
-                    Console.WriteLine("Edited form with id: " + form.FormId);
-                    return Ok(form);
-                }
-                else
-                {
-                    Console.WriteLine("Could not find form with id: " + form.FormId);
-                    return BadRequest("Could not find form with id: " + form.FormId);
-                }
-            }
-        }
-
 
         //Adds a new form
         //*Currently user provides an id*
         //*Better version would auto generate the id with Guid.NewGuid.ToString()*
+        [Authorize]
         [HttpPost("/api/[controller]/addForm")]
         public IActionResult addForm(Form form)
         {
@@ -126,7 +51,36 @@ namespace SyncDataAPI.Controllers
             }
         }
 
+        //Finds a form by id
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public Form findForm(int id)
+        {
+            using (var db = new FormsContext())
+            {
+                Form form = db.Forms.FirstOrDefault(form => form.FormId == id);
+                List<Field> fields = db.Fields.Where(field => field.FormId == id).ToList();
+                if (form != null)
+                {
+                    form.Fields = fields;
+                }
+                return form;
+            }
+        }
+
+        //Finds a field by id
+        //Future use
+        [ApiExplorerSettings(IgnoreApi = true)]
+        private Field findField(int id)
+        {
+            using (var db = new FormsContext())
+            {
+                Field field = db.Fields.FirstOrDefault(field => field.FormId == id);
+                return field;
+            }
+        }
+
         //Get a specific form by it's id
+        [Authorize]
         [HttpGet("/api/[controller]/getForm/{id}")]
         public IActionResult getForm(int id)
         {
@@ -148,6 +102,7 @@ namespace SyncDataAPI.Controllers
         }
 
         //Get all logs
+        [Authorize]
         [HttpGet("/api/[controller]/getLogs")]
         public IActionResult getLogs()
         {
@@ -158,12 +113,55 @@ namespace SyncDataAPI.Controllers
             }
         }
 
-        //Get all logs
+        //Finds a form by id
+        [ApiExplorerSettings(IgnoreApi = true)]
+        private List<SubApplication> getSubApplications()
+        {
+            using (var db = new FormsContext())
+            {
+                List<SubApplication> subApplications = db.SubApplications.ToList();
+
+                return subApplications;
+            }
+        }
+
+        //Updates a form
+        [Authorize]
+        [HttpPost("/api/[controller]/updateForm")]
+        public IActionResult updateForm(Form form)
+        {
+            using (var db = new FormsContext())
+            {
+                Form checkIfExists = findForm(form.FormId);
+
+                if (checkIfExists != null)
+                {
+                    db.Update(form);
+                    db.SaveChanges();
+                    updateSubApplications(form);
+                    Console.WriteLine("Edited form with id: " + form.FormId);
+                    return Ok(form);
+                }
+                else
+                {
+                    Console.WriteLine("Could not find form with id: " + form.FormId);
+                    return BadRequest("Could not find form with id: " + form.FormId);
+                }
+            }
+        }
+
+        //Initialize db with sub applications
+        [Authorize]
         [HttpGet("/api/[controller]/populateSubApplications")]
         public IActionResult populateSubApplications()
         {
             using (var db = new FormsContext())
             {
+                if (db.LogDatas.Count() > 0)
+                {
+                    return BadRequest("DB already initalized");
+                }
+
                 SubApplication subApplication1 = new SubApplication();
                 subApplication1.Id = Guid.NewGuid().ToString();
 
@@ -182,7 +180,6 @@ namespace SyncDataAPI.Controllers
                 return Ok("DB Sub Applications Initialized");
             }
         }
-
 
         [ApiExplorerSettings(IgnoreApi = true)]
         private Boolean updateSubApplications(Form form)
@@ -207,18 +204,6 @@ namespace SyncDataAPI.Controllers
 
             //return true if updates succeed
             return true;
-        }
-
-        //Finds a form by id
-        [ApiExplorerSettings(IgnoreApi = true)]
-        private List<SubApplication> getSubApplications()
-        {
-            using (var db = new FormsContext())
-            {
-                List<SubApplication> subApplications = db.SubApplications.ToList();
-
-                return subApplications;
-            }
         }
     }
 }

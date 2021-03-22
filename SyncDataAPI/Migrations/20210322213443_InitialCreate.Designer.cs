@@ -8,7 +8,7 @@ using SyncDataAPI;
 namespace SyncDataAPI.Migrations
 {
     [DbContext(typeof(FormsContext))]
-    [Migration("20210322203619_InitialCreate")]
+    [Migration("20210322213443_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

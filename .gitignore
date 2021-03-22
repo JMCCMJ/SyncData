@@ -8,3 +8,7 @@
 /SyncDataAPI/obj
 /SyncDataAPI/bin/Debug/net5.0
 /SyncDataAPI/.vs/SyncDataAPI
+/SyncDataClientToken/bin/Debug/net5.0
+/SyncDataClientToken/appsettings.json
+/SyncDataClientToken/.vs/SyncDataClientToken
+/SyncDataClientToken/obj
