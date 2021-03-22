@@ -5,10 +5,12 @@ namespace SyncDataAPI
     public class FormsContext : DbContext
     {
         public DbSet<Form> Forms { get; set; }
+        public DbSet<Field> Fields { get; set; }
+
 
         public FormsContext(): base()
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)

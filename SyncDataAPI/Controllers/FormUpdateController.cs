@@ -40,12 +40,25 @@ namespace SyncDataAPI.Controllers
 
         //Finds a form by id
         [ApiExplorerSettings(IgnoreApi = true)]
-        public Form findForm(string id)
+        public Form findForm(int id)
         {
             using (var db = new FormsContext())
             {
                 Form form = db.Forms.FirstOrDefault(form => form.FormId == id);
+                List<Field> fields = db.Fields.Where(field => field.FormId == id).ToList();
+                form.Fields = fields;
                 return form;
+            }
+        }
+
+        //Finds a form by id
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public Field findField(int id)
+        {
+            using (var db = new FormsContext())
+            {
+                Field field = db.Fields.FirstOrDefault(field => field.FormId == id);
+                return field;
             }
         }
 
@@ -60,6 +73,12 @@ namespace SyncDataAPI.Controllers
             {
                 //Use this if user is not sending their own ID
                 //form.Id = Guid.NewGuid().ToString();
+
+                foreach (Field field in form.Fields)
+                {
+                    field.FormId = form.FormId;
+                }
+
                 Form checkIfExists = findForm(form.FormId);
 
                 if (checkIfExists == null)
@@ -73,6 +92,27 @@ namespace SyncDataAPI.Controllers
                 {
                     Console.WriteLine("Form already exists with id: " + form.FormId);
                     return BadRequest("Form already exists with id: " + form.FormId);
+                }
+            }
+        }
+
+        //Get a specific form by it's id
+        [HttpGet("/api/[controller]/getForm/{id}")]
+        public IActionResult getForm(int id)
+        {
+            using (var db = new FormsContext())
+            {
+                Console.WriteLine("Request for form with id: " + id);
+                Form form = findForm(id);
+                if (form != null)
+                {
+                    Console.WriteLine("Found form with id: " + id);
+                    return Ok(form);
+                }
+                else
+                {
+                    Console.WriteLine("Could not find form with id: " + id);
+                    return BadRequest("Could not find form with id: " + id);
                 }
             }
         }
